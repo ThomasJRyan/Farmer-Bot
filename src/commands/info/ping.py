@@ -13,15 +13,6 @@ class Ping(commands.Cog):
             ctx (commands.Context): The command context.
         """
         await ctx.respond("Pong!")
-        
-    @commands.slash_command(name='pong', description="Replies with Ping!")
-    async def pong(self, ctx):
-        """A pong command that replies with Ping!
-
-        Args:
-            ctx (commands.Context): The command context.
-        """
-        await ctx.respond("Ping!")
 
 
 def setup(bot):

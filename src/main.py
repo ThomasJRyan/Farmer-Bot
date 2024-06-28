@@ -7,7 +7,7 @@ import discord
 from cogwatch import Watcher
 from discord.ext import commands
 
-from utils.constants import BOT_TOKEN
+from utils.constants import BOT_TOKEN, GUILD_ID
 
 INTENTS = discord.Intents.default()
 INTENTS.message_content = True
@@ -15,6 +15,7 @@ INTENTS.message_content = True
 SETTINGS = {
     "command_prefix": "!",
     "intents": INTENTS,
+    "debug_guilds": [GUILD_ID],
 }
 
 

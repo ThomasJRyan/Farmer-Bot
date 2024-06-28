@@ -1,0 +1,37 @@
+services:
+
+  # Database service
+  # This service uses MySql as the database for anything
+  # that needs to be stored long-term. A volume is
+  # mounted to the database service to ensure that the
+  # data is persisted even if the container is removed.
+  database:
+    image: mysql:latest
+    restart: always
+    env_file:
+      - path: stack.env
+        required: false
+    volumes:
+      - database-volume:/var/lib/mysql
+
+  # Bot service
+  # This service is the main service that runs the bot.
+  # It is built from the Dockerfile in the current directory
+  # and has the PYTHONPATH environment variable set to
+  # /opt/bot. The bot service depends on the database
+  # service to be up and running before it starts.
+  bot:
+    build: .
+    pull_policy: build
+    restart: always
+    environment:
+      - PYTHONPATH=/opt/bot
+    depends_on:
+      - database
+    env_file:
+      - stack.env
+volumes: 
+  database-volume:
+networks:
+  citizen_bot:
+    driver: bridge

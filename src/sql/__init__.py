@@ -20,16 +20,12 @@ def create_session():
     Returns:
         Session: Database session
     """
-    global engine
     global Session
     
     if Session:
         return Session()
     
-    engine = create_engine(
-        f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@database/{MYSQL_DATABASE}?charset=utf8mb4")
-    
-    Session = sessionmaker(bind=engine)
+    Session = sessionmaker(bind=get_engine())
     
     return Session()
 
@@ -47,3 +43,18 @@ def get_db():
         yield session
     finally:
         session.close()
+        
+def get_engine():
+    """Returns the database engine. Creates one if it
+    doesn't already exist.
+
+    Returns:
+        Engine: Database engine
+    """
+    global engine
+    
+    if not engine:
+        engine = create_engine(
+            f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@database/{MYSQL_DATABASE}?charset=utf8mb4")
+    
+    return engine

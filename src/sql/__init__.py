@@ -53,7 +53,8 @@ def get_engine():
     """
     global engine
     
-    engine = create_engine(
-        f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@database/{MYSQL_DATABASE}?charset=utf8mb4")
+    if not engine:
+        engine = create_engine(
+            f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@database/{MYSQL_DATABASE}?charset=utf8mb4")
     
     return engine

@@ -2,3 +2,4 @@ cogwatch
 py-cord
 PyMySQL
 SQLAlchemy
+cryptography

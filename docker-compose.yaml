@@ -13,6 +13,11 @@ services:
         required: false
     volumes:
       - database-volume:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
       
   # Bot service
   # This service is the main service that runs the bot.
@@ -27,7 +32,8 @@ services:
     volumes:
       - ./src:/opt/bot
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     env_file:
       - path: .env
         required: false

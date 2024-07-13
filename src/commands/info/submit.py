@@ -3,6 +3,7 @@ import discord
 from sql import get_db
 from discord.commands.context import ApplicationContext
 from utils.constants import SUBMISSIONS_CHANNEL
+from discord.mentions import AllowedMentions
 
 
 class Submit(commands.Cog):
@@ -24,8 +25,12 @@ class Submit(commands.Cog):
             score (int): The score being claimed.
             proof (discord.Attachment): A file containing the proof of the score.
         """
-        await ctx.bot.get_channel(SUBMISSIONS_CHANNEL).send(f"`{ctx.user.name}` submitted a score of `{score}` in the `{category}` category. {proof.url}")
-        await ctx.respond(f"Submitting a score of `{score}` in `{category}`. The score will be added to the leaderboard after review. Please be patient!", ephemeral=True)
+        submission_message = f"<@{ctx.user.id}> submitted a score of `{score}` in `{category}`. {proof.url}"
+        response_message = f"Submitted a score of `{score}` in `{category}`.\nThe score will be added to the leaderboard after review.\nPlease be patient!"
+
+        # AllowedMentions(users=False) allows us to mention the user but not ping them
+        await ctx.bot.get_channel(SUBMISSIONS_CHANNEL).send(submission_message, allowed_mentions=AllowedMentions(users=False))
+        await ctx.respond(response_message, ephemeral=True)
 
 
 def setup(bot):

@@ -30,7 +30,7 @@ class Submit(commands.Cog):
 
         # AllowedMentions(users=False) allows us to mention the user but not ping them
         await ctx.bot.get_channel(SUBMISSIONS_CHANNEL).send(submission_message, allowed_mentions=AllowedMentions(users=False))
-        await ctx.respond(response_message, ephemeral=True)
+        await ctx.respond(response_message)
 
 
 def setup(bot):

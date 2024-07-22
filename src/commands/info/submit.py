@@ -72,10 +72,6 @@ class Submit(commands.Cog):
             return
         group = submission.groupdict()
         
-        print(group['user_id'], group['score'], group['category'], group['url'])
-        print(self.bot.get_user(int(group['user_id'])))
-        print(reaction.message.channel.guild.get_member(int(group['user_id'])))
-        
         # If the user doesn't have the verifier role, remove the reaction
         # If the verifier role is not set, then anyone can verify the score
         if VERIFIER_ROLE and VERIFIER_ROLE not in [role.id for role in user.roles]:

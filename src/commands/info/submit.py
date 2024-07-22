@@ -5,23 +5,18 @@ from discord.ext import commands
 from discord.mentions import AllowedMentions
 from discord.commands.context import ApplicationContext
 
-from sql import get_db
+from sql import get_db, get_engine
+from sql.models.leaderboard import LeaderboardCategory, LeaderboardScore, get_categories
 from utils.constants import SUBMISSIONS_CHANNEL, VERIFIER_ROLE
 
-
 class Submit(commands.Cog):
-    CATEGORIES = [
-        '60s: Hay', '60s: Wood', "60s: Carrots", "60s: Pumpkins", "60s: Power", "60s: Gold", "60s: Cactus", "60s: Bones",
-        "Maze: 300", "Maze: 100", "Maze: 200 8x8", "Maze: 10x20"
-    ]
-    
-    SUBMISSION_REGEX = re.compile(r"^<@(?P<userid>\d+)>.*`(?P<score>.*)`.*`(?P<category>.*)`\. (?P<url>.*)$")
+    SUBMISSION_REGEX = re.compile(r"^<@(?P<user_id>\d+)>.*`(?P<score>.*)`.*`(?P<category>.*)`\. (?P<url>.*)$")
 
     def __init__(self, bot):
         self.bot = bot
 
     @commands.slash_command(name='submit', description="Submit a score")
-    async def submit(self, ctx: ApplicationContext, category: discord.Option(str, choices=CATEGORIES), score: float, proof: discord.Attachment):
+    async def submit(self, ctx: ApplicationContext, category: discord.Option(str, autocomplete=get_categories), score: float, proof: discord.Attachment):
         """A submit command that submits a score.
 
         Args:
@@ -75,6 +70,11 @@ class Submit(commands.Cog):
         submission = self.SUBMISSION_REGEX.match(reaction.message.content)
         if not submission:
             return
+        group = submission.groupdict()
+        
+        print(group['user_id'], group['score'], group['category'], group['url'])
+        print(self.bot.get_user(int(group['user_id'])))
+        print(reaction.message.channel.guild.get_member(int(group['user_id'])))
         
         # If the user doesn't have the verifier role, remove the reaction
         # If the verifier role is not set, then anyone can verify the score
@@ -82,14 +82,23 @@ class Submit(commands.Cog):
             await reaction.message.remove_reaction(reaction.emoji, user)
             return
         
-        # TODO: Add logic to handle adding the score to the database
         if reaction.emoji == "✅":
-            pass
+            # Add the score to the database
+            with get_db() as db:
+                category = db.query(LeaderboardCategory).filter(LeaderboardCategory.category_name == group['category']).first()
+                score = LeaderboardScore(msg_id=reaction.message.id, user_id=group['user_id'], score=group['score'], url=group['url'], category_id=category.category_id)
+                db.add(score)
+                db.commit()
         elif reaction.emoji == "❌":
             pass
+        else:
+            await reaction.message.remove_reaction(reaction.emoji, user)
+            return
         
         await reaction.message.remove_reaction("✅", self.bot.user)
         await reaction.message.remove_reaction("❌", self.bot.user)
+
+
 
 
 def setup(bot):

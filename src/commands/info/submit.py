@@ -17,12 +17,17 @@ class ApprovalButtons(discord.ui.View):
         self.score = score
         self.category = category
 
-    #TODO: Add logic to handle adding the score to the database
     @discord.ui.button(label="Approve", style=discord.ButtonStyle.green, emoji="✅")
     async def approve_callback(self, button: discord.Button, interaction: discord.Interaction):
+        # Disable the buttons.
+        self.disable_all_items()
+        await interaction.message.edit(view=self)
+
+        # Checking if the user has the verifier role
         if VERIFIER_ROLE and VERIFIER_ROLE not in [role.id for role in interaction.user.roles]:
             await interaction.response.send_message("you don't have permission to do that", ephemeral=True)
         else:
+            #TODO: Add logic to handle adding the score to the database
             await interaction.response.send_message(
                 f"<@{interaction.user.id}> approved score `{self.score}` for <@{self.user.id}> in category `{self.category}`",
                 allowed_mentions=AllowedMentions(users=False)
@@ -30,13 +35,20 @@ class ApprovalButtons(discord.ui.View):
     
     @discord.ui.button(label="Reject", style=discord.ButtonStyle.red, emoji="❌")
     async def reject_callback(self, button, interaction):
+        # Disable the buttons.
+        self.disable_all_items()
+        await interaction.message.edit(view=self)
+
+        # Checking if the user has the verifier role
         if VERIFIER_ROLE and VERIFIER_ROLE not in [role.id for role in interaction.user.roles]:
             await interaction.response.send_message("you don't have permission to do that", ephemeral=True)
         else:
+            # no database interaction is needed in case of rejection
             await interaction.response.send_message(
                 f"<@{interaction.user.id}> rejected score `{self.score}` for <@{self.user.id}> in category `{self.category}`",
                 allowed_mentions=AllowedMentions(users=False)
             )
+        
 
 class Submit(commands.Cog):
     CATEGORIES = [

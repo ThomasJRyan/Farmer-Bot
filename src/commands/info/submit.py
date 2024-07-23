@@ -6,8 +6,7 @@ from discord.mentions import AllowedMentions
 from discord.commands.context import ApplicationContext
 from discord.ui.item import Item
 
-from sql import get_db, get_engine
-from sql.models.leaderboard import LeaderboardCategory, LeaderboardScore, get_categories
+from sql.crud.leaderboard import get_category_names
 from utils.constants import SUBMISSIONS_CHANNEL, VERIFIER_ROLE
 
 class ApprovalButtons(discord.ui.View):
@@ -57,7 +56,7 @@ class Submit(commands.Cog):
         self.bot = bot
 
     @commands.slash_command(name='submit', description="Submit a score")
-    async def submit(self, ctx: ApplicationContext, category: discord.Option(str, autocomplete=get_categories), score: float, proof: discord.Attachment):
+    async def submit(self, ctx: ApplicationContext, category: discord.Option(str, autocomplete=get_category_names), score: float, proof: discord.Attachment):
         """A submit command that submits a score.
 
         Args:

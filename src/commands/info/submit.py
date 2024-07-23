@@ -9,6 +9,7 @@ from discord.ui.item import Item
 from sql.crud.leaderboard import get_category_names
 from utils.constants import SUBMISSIONS_CHANNEL, VERIFIER_ROLE
 
+
 class ApprovalButtons(discord.ui.View):
     def __init__(self, user: discord.User, score: float, category: str):
         super().__init__()
@@ -17,29 +18,41 @@ class ApprovalButtons(discord.ui.View):
         self.category = category
 
     @discord.ui.button(label="Approve", style=discord.ButtonStyle.green, emoji="✅")
-    async def approve_callback(self, button: discord.Button, interaction: discord.Interaction):
+    async def approve_callback(
+        self, button: discord.Button, interaction: discord.Interaction
+    ):
         # Checking if the user has the verifier role
-        if VERIFIER_ROLE and VERIFIER_ROLE not in [role.id for role in interaction.user.roles]:
-            await interaction.response.send_message("you don't have permission to do that", ephemeral=True)
-            return 
-        
+        if VERIFIER_ROLE and VERIFIER_ROLE not in [
+            role.id for role in interaction.user.roles
+        ]:
+            await interaction.response.send_message(
+                "you don't have permission to do that", ephemeral=True
+            )
+            return
+
         # Disable the buttons.
         self.disable_all_items()
         await interaction.message.edit(view=self)
 
-        #TODO: Add logic to handle adding the score to the database
+        # TODO: Add logic to handle adding the score to the database
         await interaction.response.send_message(
             f"<@{interaction.user.id}> approved score `{self.score}` for <@{self.user.id}> in category `{self.category}`",
-            allowed_mentions=AllowedMentions(users=False)
+            allowed_mentions=AllowedMentions(users=False),
         )
-    
+
     @discord.ui.button(label="Reject", style=discord.ButtonStyle.red, emoji="❌")
-    async def reject_callback(self, button: discord.Button, interaction: discord.Interaction):
+    async def reject_callback(
+        self, button: discord.Button, interaction: discord.Interaction
+    ):
         # Checking if the user has the verifier role
-        if VERIFIER_ROLE and VERIFIER_ROLE not in [role.id for role in interaction.user.roles]:
-            await interaction.response.send_message("you don't have permission to do that", ephemeral=True)
-            return 
-        
+        if VERIFIER_ROLE and VERIFIER_ROLE not in [
+            role.id for role in interaction.user.roles
+        ]:
+            await interaction.response.send_message(
+                "you don't have permission to do that", ephemeral=True
+            )
+            return
+
         # Disable the buttons.
         self.disable_all_items()
         await interaction.message.edit(view=self)
@@ -47,16 +60,23 @@ class ApprovalButtons(discord.ui.View):
         # no database interaction is needed in case of rejection
         await interaction.response.send_message(
             f"<@{interaction.user.id}> rejected score `{self.score}` for <@{self.user.id}> in category `{self.category}`",
-            allowed_mentions=AllowedMentions(users=False)
+            allowed_mentions=AllowedMentions(users=False),
         )
-        
+
+
 class Submit(commands.Cog):
-    
+
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.slash_command(name='submit', description="Submit a score")
-    async def submit(self, ctx: ApplicationContext, category: discord.Option(str, autocomplete=get_category_names), score: float, proof: discord.Attachment):
+    @commands.slash_command(name="submit", description="Submit a score")
+    async def submit(
+        self,
+        ctx: ApplicationContext,
+        category: discord.Option(str, autocomplete=get_category_names),
+        score: float,
+        proof: discord.Attachment,
+    ):
         """A submit command that submits a score.
 
         Args:
@@ -72,7 +92,7 @@ class Submit(commands.Cog):
         await ctx.bot.get_channel(SUBMISSIONS_CHANNEL).send(
             submission_message,
             allowed_mentions=AllowedMentions(users=False),
-            view=ApprovalButtons(ctx.user, score, category)
+            view=ApprovalButtons(ctx.user, score, category),
         )
         await ctx.respond(response_message)
 

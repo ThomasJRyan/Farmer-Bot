@@ -27,7 +27,7 @@ class Leaderboard(commands.Cog):
         ctx: ApplicationContext,
         category: discord.Option(
             str, description="The category to view", autocomplete=get_category_names
-        ),
+        ), # type: ignore
     ):
         """A command that displays the leaderboard."""
         scores = await get_scores(category)
@@ -70,7 +70,7 @@ class Leaderboard(commands.Cog):
         ctx: ApplicationContext,
         category: discord.Option(
             str, description="The category to view", autocomplete=get_category_names
-        ),
+        ), # type: ignore
     ):
         """A command that removes a category from the leaderboard."""
         # Check if the user has the verifier role

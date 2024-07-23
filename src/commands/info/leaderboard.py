@@ -1,11 +1,8 @@
-import re
 import discord
 
 from discord.ext import commands
 from discord.commands.context import ApplicationContext
 
-from sql import get_db
-from sql.models.leaderboard import LeaderboardCategory, LeaderboardScore
 from sql.crud.leaderboard import (
     get_categories,
     get_category_names,

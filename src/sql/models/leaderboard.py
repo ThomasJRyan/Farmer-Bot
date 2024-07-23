@@ -35,6 +35,8 @@ class LeaderboardScore(Base):
     category = relationship("LeaderboardCategory", backref="leaderboard_scores")
     timestamp = Column(Time)
 
+LeaderboardScore.__table__.drop(get_engine(), checkfirst=True)
+LeaderboardCategory.__table__.drop(get_engine(), checkfirst=True)
 
 LeaderboardCategory.__table__.create(get_engine(), checkfirst=True)
 LeaderboardScore.__table__.create(get_engine(), checkfirst=True)

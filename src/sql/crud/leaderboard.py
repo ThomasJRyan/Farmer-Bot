@@ -2,7 +2,7 @@ import datetime
 
 import discord
 
-from sql import get_db, get_engine
+from sql import get_db
 from sql.models.leaderboard import LeaderboardCategory, LeaderboardScore
 
 

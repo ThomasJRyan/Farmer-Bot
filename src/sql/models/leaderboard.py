@@ -1,5 +1,3 @@
-import discord
-
 from sqlalchemy import (
     Column,
     Integer,

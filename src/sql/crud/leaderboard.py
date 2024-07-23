@@ -6,7 +6,7 @@ from sql import get_db
 from sql.models.leaderboard import LeaderboardCategory, LeaderboardScore
 
 
-async def get_category(category: str):
+async def get_category(category: str) -> LeaderboardCategory:
     with get_db() as db:
         category = (
             db.query(LeaderboardCategory)
@@ -16,25 +16,25 @@ async def get_category(category: str):
         return category
 
 
-async def get_categories():
+async def get_categories() -> list[LeaderboardCategory]:
     with get_db() as db:
         return db.query(LeaderboardCategory).all()
 
 
-async def get_category_names(ctx: discord.ApplicationContext):
+async def get_category_names(ctx: discord.ApplicationContext) -> list[str]:
     with get_db() as db:
         categories = db.query(LeaderboardCategory).all()
         return [category.category_name for category in categories]
 
 
-async def add_category(category: str, description: str):
+async def add_category(category: str, description: str) -> None:
     with get_db() as db:
         cat = LeaderboardCategory(category_name=category, description=description)
         db.add(cat)
         db.commit()
 
 
-async def remove_category(category: str):
+async def remove_category(category: str) -> None:
     with get_db() as db:
         cat = (
             db.query(LeaderboardCategory)
@@ -45,7 +45,7 @@ async def remove_category(category: str):
         db.commit()
 
 
-async def get_scores(category: str):
+async def get_scores(category: str) -> list[LeaderboardScore]:
     with get_db() as db:
         category = await get_category(category)
         if not category:
@@ -60,7 +60,7 @@ async def get_scores(category: str):
         return scores
 
 
-async def add_score(msg_id: int, user_id: int, score: float, url: str, category: str):
+async def add_score(msg_id: int, user_id: int, score: float, url: str, category: str) -> bool:
     with get_db() as db:
         category = (
             db.query(LeaderboardCategory)

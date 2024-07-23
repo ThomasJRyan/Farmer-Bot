@@ -39,7 +39,7 @@ class Leaderboard(commands.Cog):
         msg = "```ex\n"
         for i, score in enumerate(scores[:10]):
             user = ctx.guild.get_member(int(score.user_id))
-            msg += f"{i+1}. {user.nick.title()} - {score.score}\n"
+            msg += f"{i+1}. {user.name.title()} - {score.score}\n"
         msg += "```"
 
         await ctx.respond(msg)

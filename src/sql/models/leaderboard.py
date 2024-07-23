@@ -7,6 +7,7 @@ from sqlalchemy import (
     BigInteger,
     Boolean,
     Time,
+    UniqueConstraint
 )
 from sqlalchemy.orm import declarative_base, relationship
 
@@ -22,6 +23,8 @@ class LeaderboardCategory(Base):
     category_name = Column(String(256), primary_key=True)
     description = Column(String(256))
     deprecated = Column(Boolean, default=False)
+    
+    __table_args__ = (UniqueConstraint('category_name'),)
 
 
 class LeaderboardScore(Base):

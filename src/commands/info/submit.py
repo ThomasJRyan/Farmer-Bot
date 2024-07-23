@@ -12,7 +12,7 @@ from utils.constants import SUBMISSIONS_CHANNEL, VERIFIER_ROLE
 
 class ApprovalButtons(discord.ui.View):
     def __init__(self, user: discord.User, score: float, category: str, url: str):
-        super().__init__()
+        super().__init__(timeout=None)
         self.user = user
         self.score = score
         self.category = category

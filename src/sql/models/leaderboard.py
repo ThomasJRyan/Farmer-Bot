@@ -1,6 +1,15 @@
 import discord
 
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, BigInteger, Boolean, Time
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Float,
+    ForeignKey,
+    BigInteger,
+    Boolean,
+    Time,
+)
 from sqlalchemy.orm import declarative_base, relationship
 
 from sql import get_db, get_engine
@@ -57,8 +66,11 @@ def add_default_categories():
                 .first()
             )
             if not cat:
-                lb = LeaderboardCategory(category_name=category, description=description)
+                lb = LeaderboardCategory(
+                    category_name=category, description=description
+                )
                 db.add(lb)
                 db.commit()
+
 
 add_default_categories()

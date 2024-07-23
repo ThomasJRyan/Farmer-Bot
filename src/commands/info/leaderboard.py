@@ -6,7 +6,13 @@ from discord.commands.context import ApplicationContext
 
 from sql import get_db
 from sql.models.leaderboard import LeaderboardCategory, LeaderboardScore
-from sql.crud.leaderboard import get_categories, get_category_names, add_category, remove_category, get_scores
+from sql.crud.leaderboard import (
+    get_categories,
+    get_category_names,
+    add_category,
+    remove_category,
+    get_scores,
+)
 from utils.constants import VERIFIER_ROLE
 
 
@@ -55,23 +61,27 @@ class Leaderboard(commands.Cog):
         if VERIFIER_ROLE and VERIFIER_ROLE not in [role.id for role in user.roles]:
             await ctx.respond("You do not have permission to add a category.")
             return
-        
+
         await add_category(category, description)
         await ctx.respond(f"Added category `{category}` to the leaderboard.")
 
     @categories.command(
         name="remove", description="Remove a category from the leaderboard"
     )
-    async def remove_category(self, ctx: ApplicationContext, category: discord.Option(
+    async def remove_category(
+        self,
+        ctx: ApplicationContext,
+        category: discord.Option(
             str, description="The category to view", autocomplete=get_category_names
-        )):
+        ),
+    ):
         """A command that removes a category from the leaderboard."""
         # Check if the user has the verifier role
         user = ctx.author
         if VERIFIER_ROLE and VERIFIER_ROLE not in [role.id for role in user.roles]:
             await ctx.respond("You do not have permission to remove a category.")
             return
-        
+
         await remove_category(category)
         await ctx.respond(f"Removed category `{category}` from the leaderboard.")
 
@@ -83,7 +93,7 @@ class Leaderboard(commands.Cog):
         categories = await get_categories()
         msg = "```protobuf\n"
         for category in categories:
-            msg += f"\"{category.category_name}\" - {category.description}\n"
+            msg += f'"{category.category_name}" - {category.description}\n'
         msg += "```"
         await ctx.respond(msg)
 

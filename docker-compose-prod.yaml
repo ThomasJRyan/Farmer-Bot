@@ -39,5 +39,5 @@ services:
 volumes: 
   database-volume:
 networks:
-  citizen_bot:
+  farm_bot:
     driver: bridge

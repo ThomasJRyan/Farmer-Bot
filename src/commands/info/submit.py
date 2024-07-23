@@ -6,16 +6,17 @@ from discord.mentions import AllowedMentions
 from discord.commands.context import ApplicationContext
 from discord.ui.item import Item
 
-from sql.crud.leaderboard import get_category_names
+from sql.crud.leaderboard import get_category_names, add_score
 from utils.constants import SUBMISSIONS_CHANNEL, VERIFIER_ROLE
 
 
 class ApprovalButtons(discord.ui.View):
-    def __init__(self, user: discord.User, score: float, category: str):
+    def __init__(self, user: discord.User, score: float, category: str, url: str):
         super().__init__()
         self.user = user
         self.score = score
         self.category = category
+        self.url = url
 
     @discord.ui.button(label="Approve", style=discord.ButtonStyle.green, emoji="✅")
     async def approve_callback(
@@ -34,7 +35,16 @@ class ApprovalButtons(discord.ui.View):
         self.disable_all_items()
         await interaction.message.edit(view=self)
 
-        # TODO: Add logic to handle adding the score to the database
+        # Add the score to the database
+        await add_score(
+            interaction.message.id,
+            self.user.id,
+            self.score,
+            self.url,
+            self.category,
+        )
+        
+        # Send a confirmation message back
         await interaction.response.send_message(
             f"<@{interaction.user.id}> approved score `{self.score}` for <@{self.user.id}> in category `{self.category}`",
             allowed_mentions=AllowedMentions(users=False),
@@ -92,7 +102,7 @@ class Submit(commands.Cog):
         await ctx.bot.get_channel(SUBMISSIONS_CHANNEL).send(
             submission_message,
             allowed_mentions=AllowedMentions(users=False),
-            view=ApprovalButtons(ctx.user, score, category),
+            view=ApprovalButtons(ctx.user, score, category, proof.url),
         )
         await ctx.respond(response_message)
 

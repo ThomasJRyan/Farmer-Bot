@@ -49,22 +49,18 @@ class Leaderboard(commands.Cog):
     )
 
     @categories.command(name="add", description="Add a category to the leaderboard")
+    @commands.has_role(VERIFIER_ROLE)
     async def add_category(
         self, ctx: ApplicationContext, category: str, description: str
     ):
         """A command that adds a category to the leaderboard."""
-        # Check if the user has the verifier role
-        user = ctx.author
-        if VERIFIER_ROLE and VERIFIER_ROLE not in [role.id for role in user.roles]:
-            await ctx.respond("You do not have permission to add a category.")
-            return
-
         await add_category(category, description)
         await ctx.respond(f"Added category `{category}` to the leaderboard.")
 
     @categories.command(
-        name="remove", description="Remove a category from the leaderboard"
+        name="remove", description="Remove a category from the leaderboard",
     )
+    @commands.has_role(VERIFIER_ROLE)
     async def remove_category(
         self,
         ctx: ApplicationContext,
@@ -73,12 +69,6 @@ class Leaderboard(commands.Cog):
         ), # type: ignore
     ):
         """A command that removes a category from the leaderboard."""
-        # Check if the user has the verifier role
-        user = ctx.author
-        if VERIFIER_ROLE and VERIFIER_ROLE not in [role.id for role in user.roles]:
-            await ctx.respond("You do not have permission to remove a category.")
-            return
-
         await remove_category(category)
         await ctx.respond(f"Removed category `{category}` from the leaderboard.")
 

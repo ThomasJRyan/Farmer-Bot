@@ -19,8 +19,8 @@ Base = declarative_base()
 class LeaderboardCategory(Base):
     __tablename__ = "leaderboard_categories"
 
-    category_id = Column(Integer, primary_key=True, autoincrement=True)
-    category_name = Column(String(256), primary_key=True)
+    category_id = Column(Integer, primary_key=True, autoincrement=True, unique=True)
+    category_name = Column(String(256), primary_key=True, unique=True)
     description = Column(String(256))
     deprecated = Column(Boolean, default=False)
     

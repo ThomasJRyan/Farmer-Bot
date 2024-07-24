@@ -10,6 +10,7 @@ from discord.ext import commands
 from utils.constants import BOT_TOKEN, GUILD_ID
 
 INTENTS = discord.Intents.default()
+INTENTS.members = True
 INTENTS.message_content = True
 
 SETTINGS = {

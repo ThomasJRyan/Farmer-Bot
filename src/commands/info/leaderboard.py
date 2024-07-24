@@ -35,11 +35,20 @@ class Leaderboard(commands.Cog):
         if not scores:
             await ctx.respond("No scores found for this category.")
             return
+        
+        existing_users = []
+        pos = 1
 
         msg = "```ex\n"
-        for i, score in enumerate(scores[:10]):
+        for score in scores:
+            if score.user_id in existing_users:
+                continue
+            if len(existing_users) >= 10:
+                break
+            existing_users.append(score.user_id)
             user = ctx.guild.get_member(int(score.user_id))
-            msg += f"{i+1}. {user.name.title()} - {score.score}\n"
+            msg += f"{pos}. {user.name.title()} - {score.score}\n"
+            pos += 1
         msg += "```"
 
         await ctx.respond(msg)

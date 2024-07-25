@@ -39,7 +39,8 @@ class Leaderboard(commands.Cog):
         existing_users = []
         pos = 1
 
-        msg = "```ex\n"
+        msg = f"Leaderboard for **{category}**:\n"
+        msg += "```ex\n"
         for score in scores:
             if score.user_id in existing_users:
                 continue
